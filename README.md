@@ -62,7 +62,7 @@ All other servies are mostly CRUDs. But thre is short info about all of them:
 
 ### Demo of working kafka cluster:
 
-<video height="360" controls>
+<video width="600" height="360" controls>
   <source src="./instant_email_demo.mp4" type="video/mp4">
 </video>
 
