@@ -62,6 +62,10 @@ All other servies are mostly CRUDs. But thre is short info about all of them:
 
 ### Demo of working kafka cluster:
 
+
+There should be a video (https://github.com/Zhassulan1/instant/blob/main/instant_email_demo.mp4):
+
+
 <video width="600" height="360" controls>
   <source src="./instant_email_demo.mp4" type="video/mp4">
 </video>
