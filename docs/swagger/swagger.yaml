@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   auth.AuthResponse:
     properties:
@@ -138,6 +137,38 @@ definitions:
       upload_url:
         type: string
     type: object
+  follow.CountResponse:
+    properties:
+      count:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  follow.Follow:
+    properties:
+      created_at:
+        type: string
+      followee_id:
+        type: string
+      follower_id:
+        type: string
+      id:
+        type: string
+    type: object
+  follow.FollowRequest:
+    properties:
+      followee_id:
+        type: string
+    required:
+    - followee_id
+    type: object
+  follow.FollowingResponse:
+    properties:
+      following:
+        type: boolean
+      user_id:
+        type: string
+    type: object
   likes.CountResponse:
     properties:
       count:
@@ -222,19 +253,8 @@ definitions:
         description: Can be file_key from MinIO or full URL
         type: string
     type: object
-host: localhost:8080
 info:
-  contact:
-    email: support@instant.com
-    name: API Support
-  description: |-
-    Microservices API Gateway for Instant social media platform
-    This API provides access to authentication, posts, files, likes, comments, and follow services.
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-  title: Instant API Gateway
-  version: "1.0"
+  contact: {}
 paths:
   /api/comments:
     post:
@@ -475,6 +495,166 @@ paths:
       summary: Generate presigned upload URL
       tags:
       - files
+  /api/follow:
+    post:
+      consumes:
+      - application/json
+      description: Follow a user by user ID (requires authentication)
+      parameters:
+      - description: Follow request data
+        in: body
+        name: follow
+        required: true
+        schema:
+          $ref: '#/definitions/follow.FollowRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/follow.Follow'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Follow a user
+      tags:
+      - follow
+  /api/follow/{user_id}:
+    delete:
+      description: Unfollow a user by user ID (requires authentication)
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Unfollow a user
+      tags:
+      - follow
+  /api/follow/{user_id}/followers/count:
+    get:
+      description: Get followers count for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/follow.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get followers count
+      tags:
+      - follow
+  /api/follow/{user_id}/following/count:
+    get:
+      description: Get following count for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/follow.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get following count
+      tags:
+      - follow
+  /api/follow/{user_id}/following/me:
+    get:
+      description: Check if current user follows the specified user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/follow.FollowingResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Check follow status
+      tags:
+      - follow
   /api/likes:
     post:
       consumes:
@@ -833,6 +1013,21 @@ paths:
       summary: Get posts by user
       tags:
       - posts
+  /health:
+    get:
+      description: Follow service health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
   /logout:
     post:
       description: Invalidates the current session
@@ -1055,10 +1250,4 @@ paths:
               type: string
             type: object
       summary: Verify code and authenticate
-securityDefinitions:
-  SessionAuth:
-    description: Session-based authentication via cookie
-    in: cookie
-    name: session_id
-    type: apiKey
 swagger: "2.0"
