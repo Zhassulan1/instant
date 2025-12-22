@@ -44,9 +44,9 @@ var (
 	database   = os.Getenv("DB_DATABASE")
 	password   = os.Getenv("DB_PASSWORD")
 	username   = os.Getenv("DB_USERNAME")
-	port       = os.Getenv("DB_PORT")
-	host       = os.Getenv("DB_HOST")
-	schema     = os.Getenv("DB_SCHEMA")
+	// port       = os.Getenv("DB_PORT")
+	// host       = os.Getenv("DB_HOST")
+	// schema     = os.Getenv("DB_SCHEMA")
 	dbInstance *service
 )
 
@@ -55,7 +55,7 @@ func New() Service {
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=require&search_path=%s", username, password, host, port, database, schema)
+	connStr := fmt.Sprintf("postgres://%s:%s@host.docker.internal:5432/%s?sslmode=disable", username, password, database)
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		log.Fatal(err)
