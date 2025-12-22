@@ -47,7 +47,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/comments.CreateCommentRequest"
+                            "$ref": "#/definitions/internal_comments.CreateCommentRequest"
                         }
                     }
                 ],
@@ -55,7 +55,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/comments.Comment"
+                            "$ref": "#/definitions/internal_comments.Comment"
                         }
                     },
                     "400": {
@@ -113,7 +113,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/comments.Comment"
+                                "$ref": "#/definitions/internal_comments.Comment"
                             }
                         }
                     },
@@ -214,7 +214,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/comments.UpdateCommentRequest"
+                            "$ref": "#/definitions/internal_comments.UpdateCommentRequest"
                         }
                     }
                 ],
@@ -222,7 +222,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comments.Comment"
+                            "$ref": "#/definitions/internal_comments.Comment"
                         }
                     },
                     "400": {
@@ -275,7 +275,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/files.GenerateDownloadURLRequest"
+                            "$ref": "#/definitions/internal_files.GenerateDownloadURLRequest"
                         }
                     }
                 ],
@@ -283,19 +283,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/files.GenerateDownloadURLResponse"
+                            "$ref": "#/definitions/internal_files.GenerateDownloadURLResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/files.ErrorResponse"
+                            "$ref": "#/definitions/internal_files.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/files.ErrorResponse"
+                            "$ref": "#/definitions/internal_files.ErrorResponse"
                         }
                     }
                 }
@@ -326,7 +326,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/files.GenerateUploadURLRequest"
+                            "$ref": "#/definitions/internal_files.GenerateUploadURLRequest"
                         }
                     }
                 ],
@@ -334,13 +334,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/files.GenerateUploadURLResponse"
+                            "$ref": "#/definitions/internal_files.GenerateUploadURLResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/files.ErrorResponse"
+                            "$ref": "#/definitions/internal_files.ErrorResponse"
                         }
                     }
                 }
@@ -381,13 +381,262 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/files.ErrorResponse"
+                            "$ref": "#/definitions/internal_files.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/files.ErrorResponse"
+                            "$ref": "#/definitions/internal_files.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/follow": {
+            "post": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
+                "description": "Follow a user by user ID (requires authentication)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "follow"
+                ],
+                "summary": "Follow a user",
+                "parameters": [
+                    {
+                        "description": "Follow request data",
+                        "name": "follow",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_follow.FollowRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/internal_follow.Follow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/follow/{user_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
+                "description": "Unfollow a user by user ID (requires authentication)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "follow"
+                ],
+                "summary": "Unfollow a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/follow/{user_id}/followers/count": {
+            "get": {
+                "description": "Get followers count for a user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "follow"
+                ],
+                "summary": "Get followers count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_follow.CountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/follow/{user_id}/following/count": {
+            "get": {
+                "description": "Get following count for a user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "follow"
+                ],
+                "summary": "Get following count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_follow.CountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/follow/{user_id}/following/me": {
+            "get": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
+                "description": "Check if current user follows the specified user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "follow"
+                ],
+                "summary": "Check follow status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_follow.FollowingResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -418,7 +667,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/likes.LikeRequest"
+                            "$ref": "#/definitions/internal_likes.LikeRequest"
                         }
                     }
                 ],
@@ -426,7 +675,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/likes.Like"
+                            "$ref": "#/definitions/internal_likes.Like"
                         }
                     },
                     "400": {
@@ -551,7 +800,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
@@ -580,7 +829,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/posts.CreatePostRequest"
+                            "$ref": "#/definitions/internal_posts.CreatePostRequest"
                         }
                     }
                 ],
@@ -588,25 +837,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/posts.PostResponse"
+                            "$ref": "#/definitions/internal_posts.PostResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
@@ -635,25 +884,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/posts.PostResponse"
+                            "$ref": "#/definitions/internal_posts.PostResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
@@ -692,31 +941,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
@@ -752,7 +1001,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/posts.UpdatePostRequest"
+                            "$ref": "#/definitions/internal_posts.UpdatePostRequest"
                         }
                     }
                 ],
@@ -760,37 +1009,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/posts.PostResponse"
+                            "$ref": "#/definitions/internal_posts.PostResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
@@ -819,7 +1068,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/likes.CountResponse"
+                            "$ref": "#/definitions/internal_likes.CountResponse"
                         }
                     },
                     "500": {
@@ -862,7 +1111,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/likes.LikedResponse"
+                            "$ref": "#/definitions/internal_likes.LikedResponse"
                         }
                     },
                     "401": {
@@ -930,23 +1179,26 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/posts.ErrorResponse"
+                            "$ref": "#/definitions/internal_posts.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/logout": {
+        "/auth/logout": {
             "post": {
                 "description": "Invalidates the current session",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Logout user",
                 "responses": {
@@ -962,7 +1214,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/request-code": {
+        "/auth/request-code": {
             "post": {
                 "description": "Generates and sends a verification code to the provided email",
                 "consumes": [
@@ -970,6 +1222,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Request verification code",
                 "parameters": [
@@ -1014,14 +1269,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}": {
+        "/auth/users/{id}": {
             "patch": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
                 "description": "Updates user email and/or username",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Update user information",
                 "parameters": [
@@ -1088,14 +1351,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}/delete": {
+        "/auth/users/{id}/delete": {
             "post": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
                 "description": "Deletes user account after verifying code",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Delete user account",
                 "parameters": [
@@ -1165,11 +1436,19 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}/request-delete-code": {
-            "post": {
+        "/auth/users/{id}/request-delete-code": {
+            "get": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
                 "description": "Sends a verification code to user's email for account deletion",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Request deletion verification code",
                 "parameters": [
@@ -1221,7 +1500,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/verify-code": {
+        "/auth/verify-code": {
             "post": {
                 "description": "Verifies the provided code and creates a session",
                 "consumes": [
@@ -1229,6 +1508,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "auth"
                 ],
                 "summary": "Verify code and authenticate",
                 "parameters": [
@@ -1269,6 +1551,29 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Follow service health check",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1367,7 +1672,7 @@ const docTemplate = `{
                 }
             }
         },
-        "comments.Comment": {
+        "internal_comments.Comment": {
             "type": "object",
             "properties": {
                 "body": {
@@ -1390,7 +1695,7 @@ const docTemplate = `{
                 }
             }
         },
-        "comments.CreateCommentRequest": {
+        "internal_comments.CreateCommentRequest": {
             "type": "object",
             "required": [
                 "body",
@@ -1405,7 +1710,7 @@ const docTemplate = `{
                 }
             }
         },
-        "comments.UpdateCommentRequest": {
+        "internal_comments.UpdateCommentRequest": {
             "type": "object",
             "required": [
                 "body"
@@ -1416,7 +1721,7 @@ const docTemplate = `{
                 }
             }
         },
-        "files.ErrorResponse": {
+        "internal_files.ErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1433,7 +1738,7 @@ const docTemplate = `{
                 }
             }
         },
-        "files.GenerateDownloadURLRequest": {
+        "internal_files.GenerateDownloadURLRequest": {
             "type": "object",
             "required": [
                 "file_key"
@@ -1444,7 +1749,7 @@ const docTemplate = `{
                 }
             }
         },
-        "files.GenerateDownloadURLResponse": {
+        "internal_files.GenerateDownloadURLResponse": {
             "type": "object",
             "properties": {
                 "download_url": {
@@ -1456,7 +1761,7 @@ const docTemplate = `{
                 }
             }
         },
-        "files.GenerateUploadURLRequest": {
+        "internal_files.GenerateUploadURLRequest": {
             "type": "object",
             "required": [
                 "content_type",
@@ -1475,7 +1780,7 @@ const docTemplate = `{
                 }
             }
         },
-        "files.GenerateUploadURLResponse": {
+        "internal_files.GenerateUploadURLResponse": {
             "type": "object",
             "properties": {
                 "expires_at": {
@@ -1490,7 +1795,57 @@ const docTemplate = `{
                 }
             }
         },
-        "likes.CountResponse": {
+        "internal_follow.CountResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_follow.Follow": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "followee_id": {
+                    "type": "string"
+                },
+                "follower_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_follow.FollowRequest": {
+            "type": "object",
+            "required": [
+                "followee_id"
+            ],
+            "properties": {
+                "followee_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_follow.FollowingResponse": {
+            "type": "object",
+            "properties": {
+                "following": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_likes.CountResponse": {
             "type": "object",
             "properties": {
                 "count": {
@@ -1501,7 +1856,7 @@ const docTemplate = `{
                 }
             }
         },
-        "likes.Like": {
+        "internal_likes.Like": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1518,7 +1873,7 @@ const docTemplate = `{
                 }
             }
         },
-        "likes.LikeRequest": {
+        "internal_likes.LikeRequest": {
             "type": "object",
             "required": [
                 "post_id"
@@ -1529,7 +1884,7 @@ const docTemplate = `{
                 }
             }
         },
-        "likes.LikedResponse": {
+        "internal_likes.LikedResponse": {
             "type": "object",
             "properties": {
                 "liked": {
@@ -1540,7 +1895,7 @@ const docTemplate = `{
                 }
             }
         },
-        "posts.CreatePostRequest": {
+        "internal_posts.CreatePostRequest": {
             "type": "object",
             "required": [
                 "caption",
@@ -1557,7 +1912,7 @@ const docTemplate = `{
                 }
             }
         },
-        "posts.ErrorResponse": {
+        "internal_posts.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1568,7 +1923,7 @@ const docTemplate = `{
                 }
             }
         },
-        "posts.Post": {
+        "internal_posts.Post": {
             "type": "object",
             "properties": {
                 "caption": {
@@ -1591,11 +1946,11 @@ const docTemplate = `{
                 }
             }
         },
-        "posts.PostResponse": {
+        "internal_posts.PostResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/posts.Post"
+                    "$ref": "#/definitions/internal_posts.Post"
                 },
                 "message": {
                     "type": "string"
@@ -1605,7 +1960,7 @@ const docTemplate = `{
                 }
             }
         },
-        "posts.UpdatePostRequest": {
+        "internal_posts.UpdatePostRequest": {
             "type": "object",
             "properties": {
                 "caption": {

@@ -28,13 +28,14 @@ func NewHandler(service Service, sessionMgr session.Manager) *Handler {
 // RequestCode handles POST /request-code
 // @Summary Request verification code
 // @Description Generates and sends a verification code to the provided email
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param request body RequestCodeRequest true "Email address"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /request-code [post]
+// @Router /auth/request-code [post]
 func (h *Handler) RequestCode(c *gin.Context) {
 	var req RequestCodeRequest
 
@@ -58,6 +59,7 @@ func (h *Handler) RequestCode(c *gin.Context) {
 // VerifyCode handles POST /verify-code
 // @Summary Verify code and authenticate
 // @Description Verifies the provided code and creates a session
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param request body VerifyCodeRequest true "Email and verification code"
@@ -65,7 +67,7 @@ func (h *Handler) RequestCode(c *gin.Context) {
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /verify-code [post]
+// @Router /auth/verify-code [post]
 func (h *Handler) VerifyCode(c *gin.Context) {
 	var req VerifyCodeRequest
 
@@ -145,9 +147,10 @@ func (h *Handler) VerifyCode(c *gin.Context) {
 // Logout handles POST /logout
 // @Summary Logout user
 // @Description Invalidates the current session
+// @Tags auth
 // @Produce json
 // @Success 200 {object} map[string]string
-// @Router /logout [post]
+// @Router /auth/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
 	// Get session ID from cookie
 	sessionID, err := c.Cookie("session_id")
@@ -168,6 +171,12 @@ func (h *Handler) Logout(c *gin.Context) {
 }
 
 // Health handles GET /health
+// @Summary Health check
+// @Description Auth service health check
+// @Tags health
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /health [get]
 func (h *Handler) Health(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "healthy",
@@ -178,6 +187,7 @@ func (h *Handler) Health(c *gin.Context) {
 // UpdateUser handles PATCH /users/:id
 // @Summary Update user information
 // @Description Updates user email and/or username
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
@@ -187,7 +197,8 @@ func (h *Handler) Health(c *gin.Context) {
 // @Failure 404 {object} map[string]string
 // @Failure 409 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id} [patch]
+// @Security SessionAuth
+// @Router /auth/users/{id} [patch]
 func (h *Handler) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
 	if userID == "" {
@@ -247,13 +258,15 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 // RequestDeleteCode handles POST /users/:id/request-delete-code
 // @Summary Request deletion verification code
 // @Description Sends a verification code to user's email for account deletion
+// @Tags auth
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id}/request-delete-code [post]
+// @Security SessionAuth
+// @Router /auth/users/{id}/request-delete-code [get]
 func (h *Handler) RequestDeleteCode(c *gin.Context) {
 	userID := c.Param("id")
 	if userID == "" {
@@ -302,6 +315,7 @@ func (h *Handler) RequestDeleteCode(c *gin.Context) {
 // DeleteUser handles POST /users/:id/delete
 // @Summary Delete user account
 // @Description Deletes user account after verifying code
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
@@ -311,7 +325,8 @@ func (h *Handler) RequestDeleteCode(c *gin.Context) {
 // @Failure 401 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id}/delete [post]
+// @Security SessionAuth
+// @Router /auth/users/{id}/delete [post]
 func (h *Handler) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 	if userID == "" {
