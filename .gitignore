@@ -41,3 +41,6 @@ cookies.txt
 # OS X generated file
 .DS_Store
 
+scripts
+CLAUDE.md
+.claude

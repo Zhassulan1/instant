@@ -1,0 +1,6 @@
+projectKey=Highload
+serverUrl=http://localhost:9000
+serverVersion=25.10.0.114319
+dashboardUrl=http://localhost:9000/dashboard?id=Highload
+ceTaskId=2e760097-ff9c-4b27-8a75-ef636a49d24a
+ceTaskUrl=http://localhost:9000/api/ce/task?id=2e760097-ff9c-4b27-8a75-ef636a49d24a

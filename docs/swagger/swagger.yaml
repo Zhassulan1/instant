@@ -57,7 +57,7 @@ definitions:
     - code
     - email
     type: object
-  comments.Comment:
+  internal_comments.Comment:
     properties:
       body:
         type: string
@@ -72,7 +72,7 @@ definitions:
       user_id:
         type: string
     type: object
-  comments.CreateCommentRequest:
+  internal_comments.CreateCommentRequest:
     properties:
       body:
         type: string
@@ -82,14 +82,14 @@ definitions:
     - body
     - post_id
     type: object
-  comments.UpdateCommentRequest:
+  internal_comments.UpdateCommentRequest:
     properties:
       body:
         type: string
     required:
     - body
     type: object
-  files.ErrorResponse:
+  internal_files.ErrorResponse:
     properties:
       code:
         type: string
@@ -100,14 +100,14 @@ definitions:
       success:
         type: boolean
     type: object
-  files.GenerateDownloadURLRequest:
+  internal_files.GenerateDownloadURLRequest:
     properties:
       file_key:
         type: string
     required:
     - file_key
     type: object
-  files.GenerateDownloadURLResponse:
+  internal_files.GenerateDownloadURLResponse:
     properties:
       download_url:
         type: string
@@ -115,7 +115,7 @@ definitions:
         description: Unix timestamp
         type: integer
     type: object
-  files.GenerateUploadURLRequest:
+  internal_files.GenerateUploadURLRequest:
     properties:
       content_type:
         type: string
@@ -128,7 +128,7 @@ definitions:
     - content_type
     - filename
     type: object
-  files.GenerateUploadURLResponse:
+  internal_files.GenerateUploadURLResponse:
     properties:
       expires_at:
         description: Unix timestamp
@@ -138,14 +138,46 @@ definitions:
       upload_url:
         type: string
     type: object
-  likes.CountResponse:
+  internal_follow.CountResponse:
+    properties:
+      count:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  internal_follow.Follow:
+    properties:
+      created_at:
+        type: string
+      followee_id:
+        type: string
+      follower_id:
+        type: string
+      id:
+        type: string
+    type: object
+  internal_follow.FollowRequest:
+    properties:
+      followee_id:
+        type: string
+    required:
+    - followee_id
+    type: object
+  internal_follow.FollowingResponse:
+    properties:
+      following:
+        type: boolean
+      user_id:
+        type: string
+    type: object
+  internal_likes.CountResponse:
     properties:
       count:
         type: integer
       post_id:
         type: string
     type: object
-  likes.Like:
+  internal_likes.Like:
     properties:
       created_at:
         type: string
@@ -156,21 +188,21 @@ definitions:
       user_id:
         type: string
     type: object
-  likes.LikeRequest:
+  internal_likes.LikeRequest:
     properties:
       post_id:
         type: string
     required:
     - post_id
     type: object
-  likes.LikedResponse:
+  internal_likes.LikedResponse:
     properties:
       liked:
         type: boolean
       post_id:
         type: string
     type: object
-  posts.CreatePostRequest:
+  internal_posts.CreatePostRequest:
     properties:
       caption:
         maxLength: 1000
@@ -182,14 +214,14 @@ definitions:
     - caption
     - image_url
     type: object
-  posts.ErrorResponse:
+  internal_posts.ErrorResponse:
     properties:
       error:
         type: string
       success:
         type: boolean
     type: object
-  posts.Post:
+  internal_posts.Post:
     properties:
       caption:
         type: string
@@ -204,16 +236,16 @@ definitions:
       user_id:
         type: string
     type: object
-  posts.PostResponse:
+  internal_posts.PostResponse:
     properties:
       data:
-        $ref: '#/definitions/posts.Post'
+        $ref: '#/definitions/internal_posts.Post'
       message:
         type: string
       success:
         type: boolean
     type: object
-  posts.UpdatePostRequest:
+  internal_posts.UpdatePostRequest:
     properties:
       caption:
         maxLength: 1000
@@ -247,14 +279,14 @@ paths:
         name: comment
         required: true
         schema:
-          $ref: '#/definitions/comments.CreateCommentRequest'
+          $ref: '#/definitions/internal_comments.CreateCommentRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/comments.Comment'
+            $ref: '#/definitions/internal_comments.Comment'
         "400":
           description: Bad Request
           schema:
@@ -328,14 +360,14 @@ paths:
         name: comment
         required: true
         schema:
-          $ref: '#/definitions/comments.UpdateCommentRequest'
+          $ref: '#/definitions/internal_comments.UpdateCommentRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/comments.Comment'
+            $ref: '#/definitions/internal_comments.Comment'
         "400":
           description: Bad Request
           schema:
@@ -375,7 +407,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/comments.Comment'
+              $ref: '#/definitions/internal_comments.Comment'
             type: array
         "500":
           description: Internal Server Error
@@ -406,11 +438,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/files.ErrorResponse'
+            $ref: '#/definitions/internal_files.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/files.ErrorResponse'
+            $ref: '#/definitions/internal_files.ErrorResponse'
       security:
       - SessionAuth: []
       summary: Delete a file
@@ -427,22 +459,22 @@ paths:
         name: file
         required: true
         schema:
-          $ref: '#/definitions/files.GenerateDownloadURLRequest'
+          $ref: '#/definitions/internal_files.GenerateDownloadURLRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/files.GenerateDownloadURLResponse'
+            $ref: '#/definitions/internal_files.GenerateDownloadURLResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/files.ErrorResponse'
+            $ref: '#/definitions/internal_files.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/files.ErrorResponse'
+            $ref: '#/definitions/internal_files.ErrorResponse'
       summary: Generate presigned download URL
       tags:
       - files
@@ -458,23 +490,183 @@ paths:
         name: file
         required: true
         schema:
-          $ref: '#/definitions/files.GenerateUploadURLRequest'
+          $ref: '#/definitions/internal_files.GenerateUploadURLRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/files.GenerateUploadURLResponse'
+            $ref: '#/definitions/internal_files.GenerateUploadURLResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/files.ErrorResponse'
+            $ref: '#/definitions/internal_files.ErrorResponse'
       security:
       - SessionAuth: []
       summary: Generate presigned upload URL
       tags:
       - files
+  /api/follow:
+    post:
+      consumes:
+      - application/json
+      description: Follow a user by user ID (requires authentication)
+      parameters:
+      - description: Follow request data
+        in: body
+        name: follow
+        required: true
+        schema:
+          $ref: '#/definitions/internal_follow.FollowRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_follow.Follow'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Follow a user
+      tags:
+      - follow
+  /api/follow/{user_id}:
+    delete:
+      description: Unfollow a user by user ID (requires authentication)
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Unfollow a user
+      tags:
+      - follow
+  /api/follow/{user_id}/followers/count:
+    get:
+      description: Get followers count for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_follow.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get followers count
+      tags:
+      - follow
+  /api/follow/{user_id}/following/count:
+    get:
+      description: Get following count for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_follow.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get following count
+      tags:
+      - follow
+  /api/follow/{user_id}/following/me:
+    get:
+      description: Check if current user follows the specified user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_follow.FollowingResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - SessionAuth: []
+      summary: Check follow status
+      tags:
+      - follow
   /api/likes:
     post:
       consumes:
@@ -486,14 +678,14 @@ paths:
         name: like
         required: true
         schema:
-          $ref: '#/definitions/likes.LikeRequest'
+          $ref: '#/definitions/internal_likes.LikeRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/likes.Like'
+            $ref: '#/definitions/internal_likes.Like'
         "400":
           description: Bad Request
           schema:
@@ -577,7 +769,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       summary: Get all posts
       tags:
       - posts
@@ -591,26 +783,26 @@ paths:
         name: post
         required: true
         schema:
-          $ref: '#/definitions/posts.CreatePostRequest'
+          $ref: '#/definitions/internal_posts.CreatePostRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/posts.PostResponse'
+            $ref: '#/definitions/internal_posts.PostResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       security:
       - SessionAuth: []
       summary: Create a new post
@@ -636,23 +828,23 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       security:
       - SessionAuth: []
       summary: Delete a post
@@ -672,19 +864,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/posts.PostResponse'
+            $ref: '#/definitions/internal_posts.PostResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       summary: Get a post by ID
       tags:
       - posts
@@ -704,34 +896,34 @@ paths:
         name: post
         required: true
         schema:
-          $ref: '#/definitions/posts.UpdatePostRequest'
+          $ref: '#/definitions/internal_posts.UpdatePostRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/posts.PostResponse'
+            $ref: '#/definitions/internal_posts.PostResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       security:
       - SessionAuth: []
       summary: Update a post
@@ -752,7 +944,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/likes.CountResponse'
+            $ref: '#/definitions/internal_likes.CountResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -777,7 +969,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/likes.LikedResponse'
+            $ref: '#/definitions/internal_likes.LikedResponse'
         "401":
           description: Unauthorized
           schema:
@@ -825,15 +1017,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/posts.ErrorResponse'
+            $ref: '#/definitions/internal_posts.ErrorResponse'
       summary: Get posts by user
       tags:
       - posts
-  /logout:
+  /auth/logout:
     post:
       description: Invalidates the current session
       produces:
@@ -846,7 +1038,9 @@ paths:
               type: string
             type: object
       summary: Logout user
-  /request-code:
+      tags:
+      - auth
+  /auth/request-code:
     post:
       consumes:
       - application/json
@@ -880,7 +1074,9 @@ paths:
               type: string
             type: object
       summary: Request verification code
-  /users/{id}:
+      tags:
+      - auth
+  /auth/users/{id}:
     patch:
       consumes:
       - application/json
@@ -928,8 +1124,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - SessionAuth: []
       summary: Update user information
-  /users/{id}/delete:
+      tags:
+      - auth
+  /auth/users/{id}/delete:
     post:
       consumes:
       - application/json
@@ -979,9 +1179,13 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - SessionAuth: []
       summary: Delete user account
-  /users/{id}/request-delete-code:
-    post:
+      tags:
+      - auth
+  /auth/users/{id}/request-delete-code:
+    get:
       description: Sends a verification code to user's email for account deletion
       parameters:
       - description: User ID
@@ -1016,8 +1220,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - SessionAuth: []
       summary: Request deletion verification code
-  /verify-code:
+      tags:
+      - auth
+  /auth/verify-code:
     post:
       consumes:
       - application/json
@@ -1055,6 +1263,23 @@ paths:
               type: string
             type: object
       summary: Verify code and authenticate
+      tags:
+      - auth
+  /health:
+    get:
+      description: Follow service health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
 securityDefinitions:
   SessionAuth:
     description: Session-based authentication via cookie

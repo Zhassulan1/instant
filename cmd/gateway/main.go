@@ -16,6 +16,11 @@ import (
 	"instant/internal/session"
 
 	_ "instant/docs/swagger"
+	_ "instant/internal/comments"
+	_ "instant/internal/files"
+	_ "instant/internal/follow"
+	_ "instant/internal/likes"
+	_ "instant/internal/posts"
 	_ "github.com/joho/godotenv/autoload"
 )
 
